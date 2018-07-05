@@ -1,1 +1,1 @@
-# moodle-qtype_stacknouveau-
+# moodle-qtype_stacknouveau
