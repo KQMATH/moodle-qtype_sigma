@@ -4,9 +4,8 @@
 ## What is it?
 SIGMA is a question type based on [STACK](https://github.com/maths/moodle-qtype_stack/blob/master/Readme.md), and aims to provide a visual and intuitive way for students to write mathematical answers.
 
-## Installation:
-
-###Requirements
+## Installation:  
+### Requirements
 SIGMA requires [STACK](https://github.com/maths/moodle-qtype_stack/blob/master/Readme.md) to be installed first. Please see the STACK [installation instructions](https://github.com/maths/moodle-qtype_stack/blob/master/doc/en/Installation/index.md).
 
 ### Moodle plugins directory
