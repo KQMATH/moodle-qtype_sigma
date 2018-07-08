@@ -13,7 +13,7 @@ Click on **Install now** within the plugins directory, and then select your site
 
 ### Manually
 Unzip all the files into a temporary directory.
-Copy the **jazzquiz** folder into **moodle/mod**.
+Copy the **sigma** folder into **moodle/mod**.
 The system administrator should then log in to moodle and click on the **Notifications** link in the Site administration
 block.
 
