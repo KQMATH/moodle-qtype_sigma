@@ -22,20 +22,22 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+defined('MOODLE_INTERNAL') || die;
 
-defined('MOODLE_INTERNAL') || die();
+if ($ADMIN->fulltree) {
 
-// General.
-$string['pluginname'] = 'SIGMA';
-$string['pluginname_help'] = 'SIGMA is an assessment system based on STACK with visual math input';
-$string['pluginname_link'] = 'question/type/sigma';
-$string['pluginnameadding'] = 'Adding a SIGMA question';
-$string['pluginnameediting'] = 'Editing a SIGMA question';
-$string['pluginnamesummary'] = 'SIGMA provides mathematical questions with visual input capabilities for Moodle quizzes.';
+    // Options for new inputs.
+    $settings->add(new admin_setting_heading('inputoptionsheading',
+        get_string('input_options_heading', 'qtype_sigma'),
+        get_string('input_options_heading_desc', 'qtype_sigma')));
 
 
-// Admin Settings.
-$string['input_options_heading'] = 'Default input options';
-$string['input_options_heading_desc'] = 'Used when creating a new question, or adding a new input to an existing question.';
-$string['only_single_letter_variables'] = 'Only single lettered variables';
-$string['only_single_letter_variables_desc'] = 'Restrict inputs to only allow single lettered variables.';
+    $settings->add(new admin_setting_configselect('qtype_sigma/singlevars',
+        get_string('only_single_letter_variables', 'qtype_sigma'),
+        get_string('only_single_letter_variables_desc', 'qtype_sigma'), '1',
+        array(
+            '0' => get_string('no'),
+            '1' => get_string('yes'),
+        )));
+
+}
