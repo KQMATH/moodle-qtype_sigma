@@ -90,10 +90,12 @@ define(['jquery', './tex2max'], function ($, Tex2Max) {
 
 
     function convert(latex) {
-        let converter = new Tex2Max({
+        let converter = new Tex2Max.TeX2Max({
             onlySingleVariables: true,
             handleEquation: false,
             addTimesSign: true,
+            onlyGreekName: true,
+            onlyGreekSymbol: false,
         });
 
         let result = '';
@@ -124,7 +126,7 @@ define(['jquery', './tex2max'], function ($, Tex2Max) {
                 if ($input.length === 0) {
                     return;
                 }
-                $input.css('display', 'none');
+                // $input.css('display', 'none');
                 let wrapper = document.createElement('div');
 
 
