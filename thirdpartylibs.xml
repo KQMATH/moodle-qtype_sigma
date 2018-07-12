@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<libraries>
+    <library>
+        <location>amd/src/tex2max.js</location>
+        <name>TeX2Max</name>
+        <version>1.0.0</version>
+        <license>GPL</license>
+        <licenseversion>3</licenseversion>
+    </library>
+</libraries>
