@@ -1,4 +1,4 @@
-define(['jquery', './tex2max'], function ($, Tex2Max) {
+define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
 
     // MathQuill:
     !function () {
@@ -110,23 +110,20 @@ define(['jquery', './tex2max'], function ($, Tex2Max) {
     }
 
     return {
-        initialize: (...arg) => {
+        initialize: (stackInputIDs, latexInputIDs, latexResponses) => {
+            for (let i = 0; i < stackInputIDs.length; i++) {
 
+                let stackInput = document.getElementById(stackInputIDs[i]);
+                let $stackInput = $(stackInput);
 
-            arg.forEach(id => {
-                console.log(id)
+                let latexInput = document.getElementById(latexInputIDs[i]);
+                let $latexInput = $(latexInput);
 
-                let temp = document.getElementById(id);
-                let $input = $(temp);
-
-                console.log(temp);
-
-
-                console.log($input);
-                if ($input.length === 0) {
+                if ($stackInput.length === 0) {
                     return;
                 }
-                // $input.css('display', 'none');
+
+                $stackInput.css('display', 'none');
                 let wrapper = document.createElement('div');
 
 
@@ -135,13 +132,19 @@ define(['jquery', './tex2max'], function ($, Tex2Max) {
                     handlers: {
                         edit: () => {
 
-                            $input.val(convert(field.latex()));
-                            $input.get(0).dispatchEvent(new Event('change')); // Event fiering needs to be on a vanilla dom object.
+                            $stackInput.val(convert(field.latex()));
+                            $latexInput.val(field.latex());
+                            $stackInput.get(0).dispatchEvent(new Event('change')); // Event firing needs to be on a vanilla dom object.
                             // TODO Fulfill all the other events created by stack on the input element mathquill is replacing. See moodle\question\type\stack\yui\src\input\js\input.js
                         }
                     },
                     spaceBehavesLikeTab: true
                 });
+
+                if (latexResponses[i] !== null) {
+                    field.write(latexResponses[i]);
+                }
+
                 $(wrapper).css({
                     background: '#fcfcfc',
                     border: '1px solid #bbb',
@@ -150,10 +153,10 @@ define(['jquery', './tex2max'], function ($, Tex2Max) {
                     width: '90%',
                     padding: '8px',
                 });
-                let $parent = $input.parent();
+                let $parent = $stackInput.parent();
                 $parent.append(controls(field));
                 $parent.append(wrapper);
-            });
+            }
         }
     };
 

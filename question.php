@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * SIGMA question definition class.
+ *
  * @package    qtype
  * @subpackage sigma
  * @author     André Storhaug <andr3.storhaug+code@gmail.com>
@@ -28,6 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/question/type/stack/question.php');
 
 /**
+ * Represents a SIGMA question.
+ *
  * @author     André Storhaug <andr3.storhaug+code@gmail.com>
  * @copyright  2018 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -35,4 +39,13 @@ require_once($CFG->dirroot . '/question/type/stack/question.php');
 class qtype_sigma_question extends qtype_stack_question {
 
 
+    public function get_expected_data() {
+        $expected = parent::get_expected_data();
+
+        foreach ($this->inputs as $name => $input) {
+            $expected[$name . '_latex'] = PARAM_RAW;
+        }
+
+        return $expected;
+    }
 }
