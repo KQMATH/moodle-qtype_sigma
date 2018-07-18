@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * SIGMA question renderer class.
+ *
  * @package    qtype
  * @subpackage sigma
  * @author     André Storhaug <andr3.storhaug+code@gmail.com>
@@ -28,6 +30,8 @@ defined('MOODLE_INTERNAL') || die();
 require_once($CFG->dirroot . '/question/type/stack/renderer.php');
 
 /**
+ * Generates the output for SIGMA questions.
+ *
  * @author     André Storhaug <andr3.storhaug+code@gmail.com>
  * @copyright  2018 NTNU
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
@@ -36,21 +40,47 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
 
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
         global $PAGE;
+
+        $result = parent::formulation_and_controls($qa, $options);
+
         $response = $qa->get_last_qt_data();
         $prefix = $qa->get_field_prefix();
         $question = $qa->get_question();
 
-        $inputsid = [];
-        foreach ($question->inputs as $name => $input) {
+        $stackinputids = [];
+        $latexinputids = [];
+        $latexresponses = [];
 
+        foreach ($question->inputs as $name => $input) {
+            // Collect all the STACK input field ids.
             if ($input->requires_validation()) {
-                $inputsid[] = $prefix . $name;
+                $stackinputids[] = $prefix . $name;
             }
+
+            // Create new hidden input fields for string the raw LaTeX input.
+            $latexinputname = $prefix . $name . '_latex';
+            $latexinputids[] = $latexinputname;
+
+            // Set initial question value to "" if the question_attempt has no responses.
+            if ($qa->get_state() == question_state::$todo) {
+                $value = "";
+            } else {
+                $value = $response[$name . '_latex'];
+            }
+            $latexresponses[] = $value;
+
+            $attributes = array(
+                'type' => 'hidden',
+                'name' => $latexinputname,
+                'value' => $value,
+                'id' => $latexinputname,
+            );
+            $result .= html_writer::empty_tag('input', $attributes);
         }
 
-        $result = parent::formulation_and_controls($qa, $options);
+        $amdParams = array($stackinputids, $latexinputids, $latexresponses);
+        $PAGE->requires->js_call_amd('qtype_sigma/input', 'initialize', $amdParams);
 
-        $PAGE->requires->js_call_amd('qtype_sigma/input', 'initialize', $inputsid);
         return $result;
     }
 }
