@@ -158,10 +158,6 @@ define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
                     spaceBehavesLikeTab: true
                 });
 
-                if (latexResponses[i] !== null) {
-                    field.write(latexResponses[i]);
-                }
-
                 $(wrapper).css({
                     background: '#fcfcfc',
                     border: '1px solid #bbb',
@@ -170,6 +166,15 @@ define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
                     width: '90%',
                     padding: '8px',
                 });
+
+
+                // Set the previous step attempt data or autosaved value to the MathQuill field.
+                if ($latexInput.val()) {
+                    field.write($latexInput.val());
+                } else if (latexResponses[i] !== null && latexResponses[i] !== "") {
+                    field.write(latexResponses[i]);
+                }
+
                 let $parent = $stackInput.parent();
                 $parent.append(controls(field));
                 $parent.append(wrapper);
