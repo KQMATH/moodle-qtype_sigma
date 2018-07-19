@@ -103,16 +103,33 @@ define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
         try {
             result = converter.toMaxima(latex);
         } catch (error) {
+            //TODO display error messages by replacing STACK's maxima response div "stackinputfeedback"
             console.log(error.message);
         }
         console.log(result);
         return result;
     }
 
-    return {
-        initialize: (stackInputIDs, latexInputIDs, latexResponses) => {
-            for (let i = 0; i < stackInputIDs.length; i++) {
+    function showOrHideCheckButton(inputIDs, prefix) {
+        for (let i = 0; i < inputIDs.length; i++) {
+            let $outerdiv = $(document.getElementById(inputIDs[i])).parents('div.que.sigma').first();
+            if ($outerdiv && ($outerdiv.hasClass('dfexplicitvaildate') || $outerdiv.hasClass('dfcbmexplicitvaildate'))) {
+                // With instant validation, we don't need the Check button, so hide it.
+                let button = $outerdiv.find('.im-controls input.submit').first();
+                if (button.attr('id') === prefix + '-submit') {
+                    button.hide();
+                }
+            }
+        }
+    }
 
+
+    return {
+        initialize: (prefix, stackInputIDs, latexInputIDs, latexResponses) => {
+
+            showOrHideCheckButton(stackInputIDs, prefix);
+
+            for (let i = 0; i < stackInputIDs.length; i++) {
                 let stackInput = document.getElementById(stackInputIDs[i]);
                 let $stackInput = $(stackInput);
 

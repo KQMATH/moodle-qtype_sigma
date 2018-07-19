@@ -78,7 +78,7 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             $result .= html_writer::empty_tag('input', $attributes);
         }
 
-        $amdParams = array($stackinputids, $latexinputids, $latexresponses);
+        $amdParams = array($prefix, $stackinputids, $latexinputids, $latexresponses);
         $PAGE->requires->js_call_amd('qtype_sigma/input', 'initialize', $amdParams);
 
         return $result;
