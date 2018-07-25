@@ -34,5 +34,56 @@ require_once($CFG->dirroot . '/question/type/stack/questiontype.php');
  */
 class qtype_sigma extends qtype_stack {
 
+    public function save_question_options($fromform) {
+        global $DB;
+
+        parent::save_question_options($fromform);
+
+        $options = $DB->get_record('qtype_sigma_options', array('questionid' => $fromform->id));
+        if (!$options) {
+            $options = new stdClass();
+            $options->questionid = $fromform->id;
+            $options->singlevars = '';
+            $options->addtimessign = '';
+            $options->mathinputmode = '';
+            $options->id = $DB->insert_record('qtype_sigma_options', $options);
+        }
+        $options->singlevars = $fromform->singlevars;
+        $options->addtimessign = $fromform->addtimessign;
+        $options->mathinputmode = $fromform->mathinputmode;
+        $DB->update_record('qtype_sigma_options', $options);
+    }
+
+
+    public function delete_question($questionid, $contextid) {
+        global $DB;
+        $DB->delete_records('qtype_sigma_options', array('questionid' => $questionid));
+        parent::delete_question($questionid, $contextid);
+    }
+
+
+    public function get_question_options($question) {
+        global $DB;
+
+        parent::get_question_options($question);
+
+        $stackoptions = $question->options;
+        $sigmaoptions = $DB->get_record('qtype_sigma_options',
+            array('questionid' => $question->id), '*', MUST_EXIST);
+
+        $question->options = (object)array_merge((array)$stackoptions, (array)$sigmaoptions);
+
+        return true;
+    }
+
+
+    protected function initialise_question_instance(question_definition $question, $questiondata) {
+        parent::initialise_question_instance($question, $questiondata);
+
+        $question->singlevars = $questiondata->options->singlevars;
+        $question->addtimessign = $questiondata->options->addtimessign;
+        $question->mathinputmode = $questiondata->options->mathinputmode;
+
+    }
 
 }
