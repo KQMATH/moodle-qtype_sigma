@@ -89,14 +89,9 @@ define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
     }
 
 
-    function convert(latex) {
-        let converter = new Tex2Max.TeX2Max({
-            onlySingleVariables: true,
-            handleEquation: false,
-            addTimesSign: true,
-            onlyGreekName: true,
-            onlyGreekSymbol: false,
-        });
+
+    function convert(latex, options) {
+        let converter = new Tex2Max.TeX2Max(options);
 
         let result = '';
 
@@ -123,9 +118,77 @@ define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
         }
     }
 
+    const DEFAULTS = {
+        onlySingleVariables: false,
+        handleEquation: false,
+        addTimesSign: true,
+        onlyGreekName: false,
+        onlyGreekSymbol: false
+    };
+
+    function formatOptionsObj(rawOptions) {
+        let options = {};
+
+        for (let key in rawOptions) {
+            if (!rawOptions.hasOwnProperty(key)) continue;
+
+            let value = rawOptions[key];
+            switch (key) {
+                case "singlevars":
+                    if (value === '1') {
+                        options.onlySingleVariables = true;
+                    } else {
+                        options.onlySingleVariables = false;
+                    }
+                    break;
+                case "addtimessign":
+                    if (value === '1') {
+                        options.addTimesSign = true;
+                    } else {
+                        options.addTimesSign = false;
+                    }
+                    break;
+
+                default :
+                    break;
+            }
+
+        }
+
+        options = Object.assign(DEFAULTS, options);
+
+        return options;
+    }
+
+    function createInputControls(mode) {
+        //TODO create different math input controls sets.
+
+        switch (mode) {
+            case 'simple':
+                console.log(mode);
+                break;
+            case 'normal':
+                console.log(mode);
+                break;
+            case 'advanced':
+                console.log(mode);
+                break;
+            case 'calculus':
+                console.log(mode);
+                break;
+            case 'none':
+                console.log(mode);
+                break;
+            default:
+                console.log('default');
+                break;
+        }
+    }
 
     return {
-        initialize: (prefix, stackInputIDs, latexInputIDs, latexResponses) => {
+        initialize: (prefix, stackInputIDs, latexInputIDs, latexResponses, questionOptions) => {
+
+            let options = formatOptionsObj(questionOptions);
 
             showOrHideCheckButton(stackInputIDs, prefix);
 
@@ -149,7 +212,7 @@ define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
                     handlers: {
                         edit: () => {
 
-                            $stackInput.val(convert(field.latex()));
+                            $stackInput.val(convert(field.latex(), options));
                             $latexInput.val(field.latex());
                             $stackInput.get(0).dispatchEvent(new Event('change')); // Event firing needs to be on a vanilla dom object.
                             // TODO Fulfill all the other events created by stack on the input element mathquill is replacing. See moodle\question\type\stack\yui\src\input\js\input.js
@@ -178,6 +241,13 @@ define(['jquery', 'qtype_sigma/tex2max'], function ($, Tex2Max) {
                 let $parent = $stackInput.parent();
                 $parent.append(controls(field));
                 $parent.append(wrapper);
+            }
+
+
+            if (questionOptions.mathinputmode) {
+                createInputControls(questionOptions['mathinputmode']);
+            } else {
+                throw new Error('No mathinputmode is set');
             }
         }
     };

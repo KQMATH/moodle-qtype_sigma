@@ -28,6 +28,7 @@
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/type/stack/renderer.php');
+require_once(__DIR__ . '/classes/options.php');
 
 /**
  * Generates the output for SIGMA questions.
@@ -78,8 +79,30 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             $result .= html_writer::empty_tag('input', $attributes);
         }
 
-        $amdParams = array($prefix, $stackinputids, $latexinputids, $latexresponses);
+        \qtype_sigma\options::is_question_single_vars();
+
+        $configParams = $this->getAMDConfigParams($question);
+        $amdParams = array($prefix, $stackinputids, $latexinputids, $latexresponses, $configParams);
         $PAGE->requires->js_call_amd('qtype_sigma/input', 'initialize', $amdParams);
+
+
+        return $result;
+    }
+
+    /**
+     * @param $question
+     * @return mixed
+     * @throws \qtype_sigma\exception\sigma_exception
+     */
+    private function getAMDConfigParams($question) {
+        $result = [];
+        if (!isset($question->singlevars)) throw new \qtype_sigma\exception\sigma_exception('renderer: singlevars is not set');
+        if (!isset($question->addtimessign)) throw new \qtype_sigma\exception\sigma_exception('renderer: addtimessign is not set');
+        if (!isset($question->mathinputmode)) throw new \qtype_sigma\exception\sigma_exception('renderer: mathinputmode is not set');
+
+        $result['singlevars'] = $question->singlevars;
+        $result['addtimessign'] = $question->addtimessign;
+        $result['mathinputmode'] = $question->mathinputmode;
 
         return $result;
     }
