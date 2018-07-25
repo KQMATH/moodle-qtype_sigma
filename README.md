@@ -26,4 +26,4 @@ Delete the module from the **Activities** module list in the admin section.
 **Developer:** André Storhaug: <andr3.storhaug+code@gmail.com>
 
 ## License
-Stack is Licensed under the [GNU General Public, License Version 3](https://github.com/KQMATH/moodle-qtype_sigma/blob/master/LICENSE).
+SIGMA is Licensed under the [GNU General Public, License Version 3](https://github.com/KQMATH/moodle-qtype_sigma/blob/master/LICENSE).
