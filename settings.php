@@ -15,6 +15,8 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Configuration settings declaration information for the SIGMA question type.
+ *
  * @package    qtype
  * @subpackage sigma
  * @author     André Storhaug <andr3.storhaug+code@gmail.com>
@@ -22,7 +24,10 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
 defined('MOODLE_INTERNAL') || die;
+
+require_once(__DIR__ . '/classes/options.php');
 
 if ($ADMIN->fulltree) {
 
@@ -35,9 +40,17 @@ if ($ADMIN->fulltree) {
     $settings->add(new admin_setting_configselect('qtype_sigma/singlevars',
         get_string('only_single_letter_variables', 'qtype_sigma'),
         get_string('only_single_letter_variables_desc', 'qtype_sigma'), '1',
-        array(
-            '0' => get_string('no'),
-            '1' => get_string('yes'),
-        )));
+        \qtype_sigma\options::get_yes_no_options()));
+    
+    
+    $settings->add(new admin_setting_configselect('qtype_sigma/addtimessign',
+        get_string('add_times_sign', 'qtype_sigma'),
+        get_string('add_times_sign_desc', 'qtype_sigma'), '1',
+        \qtype_sigma\options::get_yes_no_options()));
 
+
+    $settings->add(new admin_setting_configselect('qtype_sigma/mathinputmode',
+        get_string('math_input_mode', 'qtype_sigma'),
+        get_string('math_input_mode_desc', 'qtype_sigma'), 'normal',
+        \qtype_sigma\options::get_math_input_mode_options()));
 }
