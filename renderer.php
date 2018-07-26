@@ -79,7 +79,6 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             $result .= html_writer::empty_tag('input', $attributes);
         }
 
-        \qtype_sigma\options::is_question_single_vars();
 
         $configParams = $this->getAMDConfigParams($question);
         $amdParams = array($prefix, $stackinputids, $latexinputids, $latexresponses, $configParams);
