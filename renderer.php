@@ -79,6 +79,11 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             $result .= html_writer::empty_tag('input', $attributes);
         }
 
+        $result .= html_writer::empty_tag('div', ['id' => 'controls_wrapper']);
+
+
+        $PAGE->requires->css('question/type/sigma/visualmathinput/mathquill.css');
+        $PAGE->requires->css('question/type/sigma/visualmathinput/visual-math-input.css');
 
         $configParams = $this->getAMDConfigParams($question);
         $amdParams = array($prefix, $stackinputids, $latexinputids, $latexresponses, $configParams);
