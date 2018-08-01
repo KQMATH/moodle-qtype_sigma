@@ -13,7 +13,7 @@ Click on **Install now** within the plugins directory, and then select your site
 
 ### Manually
 Unzip all the files into a temporary directory.
-Copy the **sigma** folder into **moodle/question/type**.
+Rename the **moodle-qtype_sigma** folder to **sigma**, and move it into **moodle/question/type**.
 The system administrator should then log in to moodle and click on the **Notifications** link in the Site administration
 block.
 
@@ -23,7 +23,7 @@ Delete the module from the **Activities** module list in the admin section.
 ## Feedback:
 **Project lead:** Hans Georg Schaathun: <hasc@ntnu.no>
 
-**Developer:** André Storhaug: <andr3.storhaug+code@gmail.com>
+**Developer:** [André Storhaug](https://github.com/andstor): <andr3.storhaug+code@gmail.com>
 
 ## License
 SIGMA is Licensed under the [GNU General Public, License Version 3](https://github.com/KQMATH/moodle-qtype_sigma/blob/master/LICENSE).
