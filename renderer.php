@@ -42,7 +42,11 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
         global $PAGE;
 
-        $result = parent::formulation_and_controls($qa, $options);
+        $result = '';
+
+        $result .= html_writer::div('', '',['id' => 'controls_wrapper']);
+
+        $result .= parent::formulation_and_controls($qa, $options);
 
         $response = $qa->get_last_qt_data();
         $prefix = $qa->get_field_prefix();
@@ -79,18 +83,22 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             $result .= html_writer::empty_tag('input', $attributes);
         }
 
-        $result .= html_writer::empty_tag('div', ['id' => 'controls_wrapper']);
-
-
-        $PAGE->requires->css('question/type/sigma/visualmathinput/mathquill.css');
-        $PAGE->requires->css('question/type/sigma/visualmathinput/visual-math-input.css');
-
         $configParams = $this->getAMDConfigParams($question);
         $amdParams = array($prefix, $stackinputids, $latexinputids, $latexresponses, $configParams);
         $PAGE->requires->js_call_amd('qtype_sigma/input', 'initialize', $amdParams);
 
 
         return $result;
+    }
+
+
+    public function head_code(question_attempt $qa) {
+        global $PAGE;
+
+        parent::head_code($qa);
+
+        $PAGE->requires->css('/question/type/sigma/visualmathinput/mathquill.css');
+        $PAGE->requires->css('/question/type/sigma/visualmathinput/visual-math-input.css');
     }
 
     /**

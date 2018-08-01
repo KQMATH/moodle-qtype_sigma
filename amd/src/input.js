@@ -72,7 +72,9 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
     }
 
     function buildInputControls(mode) {
-        //TODO create different math input controls sets.
+        if (!mode) throw new Error('No mathinputmode is set');
+
+
         let controls = new VisualMath.ControlList('#controls_wrapper');
         let controlNames = [];
 
@@ -110,28 +112,35 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
         initialize: (prefix, stackInputIDs, latexInputIDs, latexResponses, questionOptions) => {
 
             let options = formatOptionsObj(questionOptions);
+            let readOnly = false;
 
             showOrHideCheckButton(stackInputIDs, prefix);
 
-            buildInput();
 
             for (let i = 0; i < stackInputIDs.length; i++) {
 
                 let latexInput = document.getElementById(latexInputIDs[i]);
                 let $latexInput = $(latexInput);
 
-                let input = new VisualMath.Input(stackInputIDs[i], 'parent');
+                let stackInput = document.getElementById(stackInputIDs[i]);
+                let $stackInput = $(stackInput);
+
+                let $parent = $stackInput.parent();
+
+                let input = new VisualMath.Input('#' + $.escapeSelector(stackInputIDs[i]), $parent);
                 input.$input.hide();
 
-                if (input.$input.prop('disabled')) return;
+                if (!input.$input.prop('readonly')) {
+                    input.onEdit = ($input, field) => {
+                        $input.val(convert(field.latex(), options));
+                        $latexInput.val(field.latex());
+                        $input.get(0).dispatchEvent(new Event('change')); // Event firing needs to be on a vanilla dom object.
+                    };
 
-
-                this.onEdit = ($input, field) => {
-                    $input.val(convert(field.latex(), options));
-                    $latexInput.val(field.latex());
-                    $input.get(0).dispatchEvent(new Event('change')); // Event firing needs to be on a vanilla dom object.
-                };
-
+                } else {
+                    readOnly = true;
+                    input.disable();
+                }
 
                 // Set the previous step attempt data or autosaved (mod_quiz) value to the MathQuill field.
                 if ($latexInput.val()) {
@@ -139,14 +148,12 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
                 } else if (latexResponses[i] !== null && latexResponses[i] !== "") {
                     input.field.write(latexResponses[i]);
                 }
+
             }
 
 
-            if (questionOptions.mathinputmode) {
-                buildInputControls(questionOptions['mathinputmode']);
-            } else {
-                throw new Error('No mathinputmode is set');
-            }
+            if (!readOnly) buildInputControls(questionOptions['mathinputmode']);
+
         }
     };
 

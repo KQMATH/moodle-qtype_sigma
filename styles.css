@@ -49,3 +49,9 @@
 .que.sigma .matrixtable td {
     border: 0px solid black;
 }
+
+/* Visual math imput */
+.que.sigma .visual-math-input-wrapper {
+    margin: -12px -20px 20px -20px;
+    background-color: #1177d1;
+}
