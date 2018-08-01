@@ -25,10 +25,14 @@
  */
 
 
+use qtype_sigma\output\debug_renderer;
+
 defined('MOODLE_INTERNAL') || die();
 
 require_once($CFG->dirroot . '/question/type/stack/renderer.php');
 require_once(__DIR__ . '/classes/options.php');
+require_once(__DIR__ . '/classes/output/debug_renderer.php');
+
 
 /**
  * Generates the output for SIGMA questions.
@@ -40,12 +44,12 @@ require_once(__DIR__ . '/classes/options.php');
 class qtype_sigma_renderer extends qtype_stack_renderer {
 
     public function formulation_and_controls(question_attempt $qa, question_display_options $options) {
-        global $PAGE;
+        global $PAGE, $CFG;
+
+        $debug = $CFG->debugdeveloper;
 
         $result = '';
-
-        $result .= html_writer::div('', '',['id' => 'controls_wrapper']);
-
+        $result .= html_writer::div('', '', ['id' => 'controls_wrapper']);
         $result .= parent::formulation_and_controls($qa, $options);
 
         $response = $qa->get_last_qt_data();
@@ -70,7 +74,12 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             if ($qa->get_state() == question_state::$todo) {
                 $value = "";
             } else {
-                $value = $response[$name . '_latex'];
+                if (isset($response[$name . '_latex'])) {
+                    $value = $response[$name . '_latex'];
+                } else {
+                    $value = "";
+
+                }
             }
             $latexresponses[] = $value;
 
@@ -83,8 +92,12 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             $result .= html_writer::empty_tag('input', $attributes);
         }
 
+        if ($CFG->debugdeveloper) {
+            $result .= debug_renderer::render_debug_view($stackinputids, "", $latexinputids, $latexresponses);
+        }
+
         $configParams = $this->getAMDConfigParams($question);
-        $amdParams = array($prefix, $stackinputids, $latexinputids, $latexresponses, $configParams);
+        $amdParams = array($debug, $prefix, $stackinputids, $latexinputids, $latexresponses, $configParams);
         $PAGE->requires->js_call_amd('qtype_sigma/input', 'initialize', $amdParams);
 
 

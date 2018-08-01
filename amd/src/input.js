@@ -109,7 +109,7 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
     }
 
     return {
-        initialize: (prefix, stackInputIDs, latexInputIDs, latexResponses, questionOptions) => {
+        initialize: (debug, prefix, stackInputIDs, latexInputIDs, latexResponses, questionOptions) => {
 
             let options = formatOptionsObj(questionOptions);
             let readOnly = false;
@@ -118,14 +118,22 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
 
 
             for (let i = 0; i < stackInputIDs.length; i++) {
+                let $stackInputDebug, $latexInputDebug;
 
                 let latexInput = document.getElementById(latexInputIDs[i]);
                 let $latexInput = $(latexInput);
 
                 let stackInput = document.getElementById(stackInputIDs[i]);
                 let $stackInput = $(stackInput);
-
                 let $parent = $stackInput.parent();
+
+                if (debug) {
+                    let stackInputDebug = document.getElementById(stackInputIDs[i] + '_debug');
+                    $stackInputDebug = $(stackInputDebug);
+
+                    let latexInputDebug = document.getElementById(latexInputIDs[i] + '_debug');
+                    $latexInputDebug = $(latexInputDebug);
+                }
 
                 let input = new VisualMath.Input('#' + $.escapeSelector(stackInputIDs[i]), $parent);
                 input.$input.hide();
@@ -135,6 +143,11 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
                         $input.val(convert(field.latex(), options));
                         $latexInput.val(field.latex());
                         $input.get(0).dispatchEvent(new Event('change')); // Event firing needs to be on a vanilla dom object.
+
+                        if (debug) {
+                            $stackInputDebug.html(convert(field.latex(), options));
+                            $latexInputDebug.html(field.latex());
+                        }
                     };
 
                 } else {
@@ -152,7 +165,13 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
             }
 
 
-            if (!readOnly) buildInputControls(questionOptions['mathinputmode']);
+            if (!readOnly) {
+                buildInputControls(questionOptions['mathinputmode']);
+            } else {
+                if (debug) {
+                    $('.sigma-debug-wrapper').hide();
+                }
+            }
 
         }
     };
