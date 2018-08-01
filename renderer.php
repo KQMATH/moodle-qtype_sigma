@@ -71,16 +71,12 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
             $latexinputids[] = $latexinputname;
 
             // Set initial question value to "" if the question_attempt has no responses.
-            if ($qa->get_state() == question_state::$todo) {
-                $value = "";
+            if (isset($response[$name . '_latex'])) {
+                $value = $response[$name . '_latex'];
             } else {
-                if (isset($response[$name . '_latex'])) {
-                    $value = $response[$name . '_latex'];
-                } else {
-                    $value = "";
-
-                }
+                $value = "";
             }
+
             $latexresponses[] = $value;
 
             $attributes = array(
