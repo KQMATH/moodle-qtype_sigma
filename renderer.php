@@ -62,9 +62,7 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
 
         foreach ($question->inputs as $name => $input) {
             // Collect all the STACK input field ids.
-            if ($input->requires_validation()) {
-                $stackinputids[] = $prefix . $name;
-            }
+            $stackinputids[] = $prefix . $name;
 
             // Create new hidden input fields for string the raw LaTeX input.
             $latexinputname = $prefix . $name . '_latex';
@@ -95,7 +93,6 @@ class qtype_sigma_renderer extends qtype_stack_renderer {
         $configParams = $this->getAMDConfigParams($question);
         $amdParams = array($debug, $prefix, $stackinputids, $latexinputids, $latexresponses, $configParams);
         $PAGE->requires->js_call_amd('qtype_sigma/input', 'initialize', $amdParams);
-
 
         return $result;
     }
