@@ -125,6 +125,9 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
 
                 let stackInput = document.getElementById(stackInputIDs[i]);
                 let $stackInput = $(stackInput);
+
+                let wrapper = document.createElement('div');
+                $stackInput.wrap(wrapper);
                 let $parent = $stackInput.parent();
 
                 if (debug) {
