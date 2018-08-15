@@ -54,13 +54,11 @@ class qtype_sigma extends qtype_stack {
         $DB->update_record('qtype_sigma_options', $options);
     }
 
-
     public function delete_question($questionid, $contextid) {
         global $DB;
         $DB->delete_records('qtype_sigma_options', array('questionid' => $questionid));
         parent::delete_question($questionid, $contextid);
     }
-
 
     public function get_question_options($question) {
         global $DB;
@@ -76,7 +74,6 @@ class qtype_sigma extends qtype_stack {
         return true;
     }
 
-
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
 
@@ -86,4 +83,24 @@ class qtype_sigma extends qtype_stack {
 
     }
 
+    public function export_to_xml($questiondata, qformat_xml $format, $notused = null) {
+        $output = parent::export_to_xml($questiondata, $format, $notused = null);
+
+        $options = $questiondata->options;
+        $output .= "<singlevars>{$options->singlevars}</singlevars>\n";
+        $output .= "<addtimessign>{$options->addtimessign}</addtimessign>\n";
+        $output .= "<mathinputmode>{$options->mathinputmode}</mathinputmode>\n";
+
+        return $output;
+    }
+
+    public function import_from_xml($xml, $fromform, qformat_xml $format, $notused = null) {
+        $fromform = parent::import_from_xml($xml, $fromform, $format, $notused = null);
+
+        $fromform->singlevars = $format->getpath($xml, array('#', 'singlevars', 0, '#'), 1);
+        $fromform->addtimessign = $format->getpath($xml, array('#', 'addtimessign', 0, '#'), 1);
+        $fromform->mathinputmode = $format->getpath($xml, array('#', 'mathinputmode', 0, '#'), 1);
+
+        return $fromform;
+    }
 }
