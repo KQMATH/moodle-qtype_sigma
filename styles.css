@@ -9,7 +9,7 @@
     border: 1px solid #fff;
     background-color: #fff;
     margin: 0.2em 3em 0.5em;
-    padding: 0.5em 0.5em 0em;
+    padding: 0.5em 0.5em 0;
 }
 
 .que.sigma .stackinputfeedback.empty {
@@ -44,10 +44,10 @@
 }
 
 .que.sigma .matrixtable {
-    border: 0px solid black;
+    border: 0 solid black;
 }
 .que.sigma .matrixtable td {
-    border: 0px solid black;
+    border: 0 solid black;
 }
 
 /* Visual math input */
@@ -80,4 +80,21 @@
 .que.sigma .sigma-debug-nb-star {
     color: #ff3333;
     padding-right: 0.3em;
+}
+
+
+.que.sigma .tex2max-feedback-wrapper {
+    border: 1px solid #fff;
+    background-color: #fff;
+    margin: 0.2em 3em 0.5em;
+    padding: 0.5em 0.5em 0.5em;
+}
+
+.que.sigma .tex2max-feedback-wrapper.empty {
+    display: none;
+}
+
+.que.sigma .tex2max-feedback-wrapper.waiting {
+    color: #888;
+    min-height: 1em;
 }

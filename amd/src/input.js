@@ -1,19 +1,127 @@
 define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], function ($, Tex2Max, VisualMath) {
 
+    // Constants
+    const FEEDBACK_ERROR_DELAY = 1000;
+    const WAITING_TIMER_DELAY = 1000;
 
-    function convert(latex, options) {
+    let errorTimer;
+    let waitingTimer;
+
+
+    function convert(latex, options, stackInputID) {
+        let result = '';
         let converter = new Tex2Max.TeX2Max(options);
 
-        let result = '';
+        clearTimeout(errorTimer);
+
+        if (!latex) {
+            hideTeX2MaXFeedback(stackInputID);
+
+            let stackValidationFeedback = document.getElementById(stackInputID + '_val');
+            let $stackValidationFeedback = $(stackValidationFeedback);
+            $stackValidationFeedback.hide();
+
+            return result;
+        }
 
         try {
             result = converter.toMaxima(latex);
+            hideTeX2MaXFeedback(stackInputID);
+
         } catch (error) {
-            //TODO display error messages by replacing STACK's maxima response div "stackinputfeedback"
-            console.log(error.message);
+            renderErrorFeedback(error.message, stackInputID);
         }
-        console.log(result);
+
         return result;
+    }
+
+    function removeAllValidationClasses(selector) {
+        let validationFeedback = document.getElementById(selector);
+        let $validationFeedback = $(validationFeedback);
+        $validationFeedback.removeClass('empty');
+        $validationFeedback.removeClass('error');
+        $validationFeedback.removeClass('loading');
+        $validationFeedback.removeClass('waiting');
+    }
+
+    function resetStackValidation(stackInputID) {
+        let stackValidationFeedback = document.getElementById(stackInputID + '_val');
+        let $stackValidationFeedback = $(stackValidationFeedback);
+
+        $stackValidationFeedback.removeAttr("style");
+    }
+
+    function hideTeX2MaXFeedback(stackInputID) {
+        let existingFeedback = document.getElementById(stackInputID + '_tex2max');
+        let $existingFeedback = $(existingFeedback);
+
+        let stackValidationFeedback = document.getElementById(stackInputID + '_val');
+
+        if (stackValidationFeedback.style.display !== "") {
+            $existingFeedback.toggleClass('waiting', true);
+            waitingTimer = setTimeout(() => {
+                removeAllValidationClasses(stackInputID + '_tex2max');
+                $existingFeedback.toggleClass('empty', true);
+                resetStackValidation(stackInputID);
+            }, WAITING_TIMER_DELAY);
+
+            setTimeout(function () {
+                removeAllValidationClasses(stackInputID + '_tex2max');
+                $existingFeedback.toggleClass('waiting', true);
+            }, 0);
+
+        } else {
+            $existingFeedback.toggleClass('empty', true);
+        }
+    }
+
+    function renderErrorFeedback(errorMessage, stackInputID) {
+        clearTimeout(waitingTimer);
+
+        let existingFeedback = document.getElementById(stackInputID + '_tex2max');
+        let $existingFeedback = $(existingFeedback);
+        if (existingFeedback && !$existingFeedback.hasClass('empty')) {
+                removeAllValidationClasses(stackInputID + '_tex2max');
+                $existingFeedback.toggleClass('waiting', true);
+        }
+
+        errorTimer = setTimeout(() => {
+            renderTeX2MaXFeedback(errorMessage, stackInputID)
+        }, FEEDBACK_ERROR_DELAY);
+    }
+
+    function renderTeX2MaXFeedback(errorMessage, stackInputID) {
+        if (!errorMessage) errorMessage = "";
+
+        let feedbackMessage = "This answer is invalid.";
+        let stackValidationFeedback = document.getElementById(stackInputID + '_val');
+        let $stackValidationFeedback = $(stackValidationFeedback);
+        $stackValidationFeedback.hide();
+
+        let existingFeedback = document.getElementById(stackInputID + '_tex2max');
+        if (existingFeedback) {
+            removeAllValidationClasses(stackInputID + '_tex2max');
+
+            let existingErrorMessageParagraph = document.getElementById(stackInputID + '_errormessage');
+            existingErrorMessageParagraph.innerHTML = errorMessage;
+
+        } else {
+            let feedbackWrapper = document.createElement('div');
+            feedbackWrapper.setAttribute('class', 'tex2max-feedback-wrapper');
+            feedbackWrapper.setAttribute('id', stackInputID + '_tex2max');
+
+            let feedbackMessageParagraph = document.createElement('p');
+            let errorMessageParagraph = document.createElement('p');
+            errorMessageParagraph.setAttribute('id', stackInputID + '_errormessage');
+
+            feedbackMessageParagraph.innerHTML = feedbackMessage;
+            errorMessageParagraph.innerHTML = errorMessage;
+
+            feedbackWrapper.append(feedbackMessageParagraph);
+            feedbackWrapper.append(errorMessageParagraph);
+
+            $stackValidationFeedback.after(feedbackWrapper);
+        }
     }
 
     function showOrHideCheckButton(inputIDs, prefix) {
@@ -63,59 +171,50 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
                 default :
                     break;
             }
-
         }
 
         options = Object.assign(DEFAULTS, options);
-
         return options;
     }
 
     function buildInputControls(mode) {
         if (!mode) throw new Error('No mathinputmode is set');
 
-
         let controls = new VisualMath.ControlList('#controls_wrapper');
         let controlNames = [];
 
         switch (mode) {
             case 'simple':
-                console.log(mode);
                 controlNames = ['sqrt', 'divide', 'pi'];
                 controls.enable(controlNames);
                 break;
             case 'normal':
-                console.log(mode);
                 controlNames = ['sqrt', 'divide', 'pi'];
                 controls.enableAll();
                 break;
             case 'advanced':
-                console.log(mode);
                 controls.enableAll();
                 break;
             case 'calculus':
-                console.log(mode);
                 controlNames = ['sqrt', 'int', 'dint', 'divide', 'plusminus', 'theta', 'pi', 'infinity'];
                 controls.enable(controlNames);
                 break;
             case 'none':
-                console.log(mode);
                 break;
             default:
-                console.log('default');
                 break;
         }
-
     }
 
     return {
         initialize: (debug, prefix, stackInputIDs, latexInputIDs, latexResponses, questionOptions) => {
 
+            if (!stackInputIDs.length > 0) return;
+
             let options = formatOptionsObj(questionOptions);
             let readOnly = false;
 
             showOrHideCheckButton(stackInputIDs, prefix);
-
 
             for (let i = 0; i < stackInputIDs.length; i++) {
                 let $stackInputDebug, $latexInputDebug;
@@ -143,12 +242,12 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
 
                 if (!input.$input.prop('readonly')) {
                     input.onEdit = ($input, field) => {
-                        $input.val(convert(field.latex(), options));
+                        $input.val(convert(field.latex(), options, stackInputIDs[i]));
                         $latexInput.val(field.latex());
                         $input.get(0).dispatchEvent(new Event('change')); // Event firing needs to be on a vanilla dom object.
 
                         if (debug) {
-                            $stackInputDebug.html(convert(field.latex(), options));
+                            $stackInputDebug.html(convert(field.latex(), options, stackInputIDs[i]));
                             $latexInputDebug.html(field.latex());
                         }
                     };
@@ -161,19 +260,17 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
                 // Set the previous step attempt data or autosaved (mod_quiz) value to the MathQuill field.
                 if ($latexInput.val()) {
                     input.field.write($latexInput.val());
+                    convert($latexInput.val(), options, stackInputIDs[i])
+
                 } else if (latexResponses[i] !== null && latexResponses[i] !== "") {
                     input.field.write(latexResponses[i]);
+                    convert(latexResponses[i], options, stackInputIDs[i])
                 }
-
             }
 
 
             if (!readOnly) {
                 buildInputControls(questionOptions['mathinputmode']);
-            } else {
-                if (debug) {
-                    $('.sigma-debug-wrapper').hide();
-                }
             }
 
         }
