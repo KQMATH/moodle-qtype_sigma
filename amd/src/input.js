@@ -6,11 +6,16 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
 
     let errorTimer;
     let waitingTimer;
-
+    let converters = new Map();
 
     function convert(latex, options, stackInputID) {
         let result = '';
-        let converter = new Tex2Max.TeX2Max(options);
+
+        let converter = converters.get(stackInputID);
+        if (typeof converter === "undefined") {
+            converter = new Tex2Max.TeX2Max(options);
+            converters.set(stackInputID, converter);
+        }
 
         clearTimeout(errorTimer);
 
@@ -137,7 +142,7 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
         }
     }
 
-    const DEFAULTS = {
+    const DEFAULT_TEX2MAX_OPTIONS = {
         onlySingleVariables: false,
         handleEquation: false,
         addTimesSign: true,
@@ -173,7 +178,7 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
             }
         }
 
-        options = Object.assign(DEFAULTS, options);
+        options = Object.assign(DEFAULT_TEX2MAX_OPTIONS, options);
         return options;
     }
 
@@ -205,6 +210,7 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
                 break;
         }
     }
+
 
     return {
         initialize: (debug, prefix, stackInputIDs, latexInputIDs, latexResponses, questionOptions) => {
