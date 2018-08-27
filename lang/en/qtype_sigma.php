@@ -55,6 +55,11 @@ $string['modeadvanced'] = 'Advanced';
 $string['modecalculus'] = 'Calculus';
 
 // Strings used on the editing form.
+$string['suggestedsolution'] = 'Suggested solution';
+$string['suggestedsolution_help'] = 'Suggested solution feedback is CASText. Suggested solution feedback, also known as a "general feedback" or "worked solution", is shown to the student after they have attempted the question. Unlike feedback, which depends on what response the student gave, the same general feedback text is shown to all students.  It may depend on the question variables used in the version of the question.';
+$string['editmode'] = 'Form editing mode';
+$string['editmode_help'] = 'The form editing mode. Set to advanced to show advanced question settings.';
+$string['editmodebtn'] = 'Convert';
 $string['singlevars'] = 'Single vars';
 $string['singlevars_help'] = 'Whether or not restrict inputs to only allow single lettered variables.';
 $string['addtimessign'] = 'Add times sign';
