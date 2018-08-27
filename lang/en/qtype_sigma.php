@@ -44,6 +44,10 @@ $string['add_times_sign_desc'] = 'Controls whether or not to add times sign. Not
 $string['math_input_mode'] = 'Math input mode';
 $string['math_input_mode_desc'] = 'Controls which set of mathematical input buttons are to be displayed.';
 
+// Edit modes.
+$string['editmodesimple'] = 'Simple';
+$string['editmodeadvanced'] = 'Advanced';
+
 // Math input modes.
 $string['modesimple'] = 'Simple';
 $string['modenormal'] = 'Normal';
