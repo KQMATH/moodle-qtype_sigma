@@ -34,6 +34,17 @@ require_once($CFG->dirroot . '/question/type/stack/questiontype.php');
  */
 class qtype_sigma extends qtype_stack {
 
+    public function save_question($question, $fromform) {
+        // For simple interface
+        if (!empty($fromform->questiontextinput)) {
+            $fromform->questiontext['text'] = $fromform->questiontextinput;
+        }
+
+        $question = parent::save_question($question, $fromform);
+        return $question;
+    }
+
+
     public function save_question_options($fromform) {
         global $DB;
 
@@ -78,6 +89,7 @@ class qtype_sigma extends qtype_stack {
 
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
+        $question->questiontextinput = $questiondata->questiontext;
 
         $question->editmode = $questiondata->options->editmode;
         $question->singlevars = $questiondata->options->singlevars;
