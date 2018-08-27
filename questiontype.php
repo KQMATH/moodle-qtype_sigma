@@ -43,11 +43,13 @@ class qtype_sigma extends qtype_stack {
         if (!$options) {
             $options = new stdClass();
             $options->questionid = $fromform->id;
+            $options->editmode = '';
             $options->singlevars = '';
             $options->addtimessign = '';
             $options->mathinputmode = '';
             $options->id = $DB->insert_record('qtype_sigma_options', $options);
         }
+        $options->editmode = $fromform->editmode;
         $options->singlevars = $fromform->singlevars;
         $options->addtimessign = $fromform->addtimessign;
         $options->mathinputmode = $fromform->mathinputmode;
@@ -77,6 +79,7 @@ class qtype_sigma extends qtype_stack {
     protected function initialise_question_instance(question_definition $question, $questiondata) {
         parent::initialise_question_instance($question, $questiondata);
 
+        $question->editmode = $questiondata->options->editmode;
         $question->singlevars = $questiondata->options->singlevars;
         $question->addtimessign = $questiondata->options->addtimessign;
         $question->mathinputmode = $questiondata->options->mathinputmode;
