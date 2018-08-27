@@ -8,9 +8,11 @@
                 <FIELD NAME="id" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="true"
                        NEXT="questionid"/>
                 <FIELD NAME="questionid" TYPE="int" LENGTH="10" NOTNULL="true" UNSIGNED="true" SEQUENCE="false"
-                       PREVIOUS="id" NEXT="singlevars" COMMENT="Foreign key linking to the question table."/>
+                       PREVIOUS="id" NEXT="editmode" COMMENT="Foreign key linking to the question table."/>
+                <FIELD NAME="editmode" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="0" SEQUENCE="false"
+                       PREVIOUS="questionid" NEXT="singlevars"/>
                 <FIELD NAME="singlevars" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"
-                       PREVIOUS="questionid" NEXT="addtimessign"/>
+                       PREVIOUS="editmode" NEXT="addtimessign"/>
                 <FIELD NAME="addtimessign" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" SEQUENCE="false"
                        PREVIOUS="singlevars" NEXT="mathinputmode"/>
                 <FIELD NAME="mathinputmode" TYPE="char" LENGTH="25" NOTNULL="true" DEFAULT="normal"
