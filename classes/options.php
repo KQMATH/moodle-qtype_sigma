@@ -28,6 +28,17 @@
 namespace qtype_sigma;
 
 /**
+ * MODE_SIMPLE - advanced editing mode.
+ */
+define('MODE_SIMPLE', "0");
+
+/**
+ * MODE_ADVANCED - advanced editing mode.
+ */
+define('MODE_ADVANCED', "1");
+
+
+/**
  * Represents a SIGMA option class.
  *
  * @author     André Storhaug <andr3.storhaug+code@gmail.com>
@@ -53,6 +64,16 @@ class options {
         return array(
             '0' => get_string('no'),
             '1' => get_string('yes'),
+        );
+    }
+
+    /**
+     * @return array of choices for the form editing modes select menu.
+     */
+    public static function get_edit_mode_options() {
+        return array(
+            '0' => get_string('editmodesimple', 'qtype_sigma'),
+            '1' => get_string('editmodeadvanced', 'qtype_sigma')
         );
     }
 
