@@ -63,10 +63,8 @@ class options {
         return array(
             'simple' => get_string('modesimple', 'qtype_sigma'),
             'normal' => get_string('modenormal', 'qtype_sigma'),
-            'advanced' => get_string('modeadvanced', 'qtype_sigma'),
-            'calculus' => get_string('modecalculus', 'qtype_sigma'),
-            'none' => get_string('none'),
+            'experimental' => get_string('modeexperimental', 'qtype_sigma'),
+            'none' => get_string('modenone', 'qtype_sigma'),
         );
     }
-
 }
