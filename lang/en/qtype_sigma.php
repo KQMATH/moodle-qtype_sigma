@@ -47,8 +47,8 @@ $string['math_input_mode_desc'] = 'Controls which set of mathematical input butt
 // Math input modes.
 $string['modesimple'] = 'Simple';
 $string['modenormal'] = 'Normal';
-$string['modeadvanced'] = 'Advanced';
-$string['modecalculus'] = 'Calculus';
+$string['modeexperimental'] = 'Experimental';
+$string['modenone'] = 'None';
 
 // Strings used on the editing form.
 $string['singlevars'] = 'Single vars';

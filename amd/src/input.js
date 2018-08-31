@@ -188,21 +188,19 @@ define(['jquery', 'qtype_sigma/tex2max', 'qtype_sigma/visual-math-input'], funct
         let controls = new VisualMath.ControlList('#controls_wrapper');
         let controlNames = [];
 
+        let caret = controls.define('caret', '^', field => field.cmd('^'))
+
         switch (mode) {
             case 'simple':
-                controlNames = ['sqrt', 'divide', 'pi'];
+                controlNames = ['sqrt', 'divide', 'pi', 'caret'];
                 controls.enable(controlNames);
                 break;
             case 'normal':
-                controlNames = ['sqrt', 'divide', 'pi'];
-                controls.enableAll();
-                break;
-            case 'advanced':
-                controls.enableAll();
-                break;
-            case 'calculus':
-                controlNames = ['sqrt', 'int', 'dint', 'divide', 'plusminus', 'theta', 'pi', 'infinity'];
+                controlNames = ['sqrt', 'divide', 'nchoosek', 'pi', 'caret'];
                 controls.enable(controlNames);
+                break;
+            case 'experimental':
+                controls.enableAll();
                 break;
             case 'none':
                 break;
